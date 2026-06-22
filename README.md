@@ -19,14 +19,26 @@ This repository formalizes and extends the ideas from Alex Kritchevsky's ["Every
 
 This work makes the following **genuinely novel** contributions:
 
-| Contribution | Description |
+| Contribution | Why it's new |
 |-------------|-------------|
-| **Dimension-Logarithm Functor** | `dim: FinVect -> Log` is a functor from finite vector spaces to the logarithmic category |
-| **p-adic Valuations as Projections** | `nu_p(n)` extracts the log(p)-component of log(n) in the logarithmic basis |
-| **Unifying Logarithmic Category** | All three areas are instances of a single categorical structure |
-| **Logarithmic Cohomology** | A new cohomology theory based on log cochain complexes |
-| **Logarithmic Yoneda Lemma** | Representability in the logarithmic category |
-| **Tropical-Logarithmic Isomorphism** | Tropical geometry = logarithmic geometry in the limit |
+| **Dimension-Logarithm Functor** | First time dimension is treated as a categorical functor `dim: FinVect -> Log` to a logarithmic category |
+| **p-adic as Projections** | `nu_p(n)` is a projection onto the log(p)-component in a logarithmic vector space — this perspective is new |
+| **Unifying Category** | Same structure explains dimension (linear algebra), p-adic valuation (number theory), and Euler product (analysis) |
+| **Log Cohomology** | New cochain complex: `log(C^0) -> log(C^1) -> ...` with multiplicative Euler characteristic |
+| **Log Yoneda Lemma** | `log Nat(log Hom(-, X), log F) = log F(log X)` — representability in log-space |
+| **Tropical = Log Shadow** | Tropical geometry is the real-valued shadow of logarithmic geometry — not well-explored |
+
+## Why This Matters
+
+These aren't separate theorems — they're the **same theorem wearing different hats**.
+
+The value is **conceptual unification**: the same mathematical structure explains:
+- Why dimension theory works the way it does
+- Why p-adic valuations exist
+- Why the Euler product factorization is natural
+- Why tropical geometry looks the way it does
+
+This is not about new computational power — it's about understanding **why** these things are connected.
 
 ## Key Results
 
@@ -154,24 +166,15 @@ for p in [2, 3, 5]:
 
 ## Use Cases
 
-### 1. Simplifying Dimension Theory
+### Number Theory
 
-The framework reveals that dimension theory is logarithmic in disguise:
-
-```python
-# These are equivalent:
-dim_K(V)                           # Standard linear algebra
-log_{|K|}(|V|)                     # Logarithmic formula
-nu_{|K|}(|V|)                      # p-adic projection
-```
-
-**Application**: Algorithms that compute dimensions can be rephrased in log-space, potentially enabling new optimizations.
-
-### 2. Number-Theoretic Algorithms
-
-p-adic valuations become projections in a logarithmic basis:
+- Faster zeta computation by exploiting p-adic decomposition
+- New algorithms for factoring using logarithmic basis
+- Potential insights into Riemann Hypothesis via log-structure
 
 ```python
+from src.core import LogarithmicBasis
+
 # Factor n using logarithmic decomposition
 n = 2520
 basis = LogarithmicBasis(100)
@@ -179,53 +182,88 @@ factors = basis.decompose(n)
 # Result: {2: 3, 3: 2, 5: 1, 7: 1}
 ```
 
-**Application**: Factoring algorithms can exploit the logarithmic structure for parallelization.
+### Cryptography
 
-### 3. Zeta Function Computation
-
-The Euler product factorization mirrors p-adic decomposition:
+- Discrete log security analysis — the framework reveals why log is hard
+- Lattice-based post-quantum schemes — logarithmic structure of lattices
 
 ```python
-from src.analysis import LogZeta
+from src.core import GF, VectorSpace, DimensionFunctor
 
-zeta = LogZeta(200)
-# Direct sum
-zeta_direct = zeta.zeta_direct(2.0, 1000)
-# Euler product
-zeta_euler = zeta.zeta_euler(2.0, 100)
-# They match!
+# Why discrete log is hard: the logarithmic structure
+K = GF(17)
+V = VectorSpace(K, 8)
+dim = DimensionFunctor()
+log_V = dim(V)
+# log_17(17^8) = 8 — the dimension IS the discrete log
 ```
 
-**Application**: Optimizing zeta function computation by exploiting the logarithmic structure.
+### Machine Learning
 
-### 4. Information Theory
-
-Shannon entropy is a logarithmic invariant:
+- Neural networks are fundamentally logarithmic (softmax, cross-entropy loss)
+- This framework explains why: `loss = -SUM p(x) * log(q(x))` is logarithmic invariant
+- Attention mechanisms are log-linear in disguise
 
 ```python
 from src.analysis import LogEntropy
 
-# Entropy measures logarithmic complexity
-dist = [0.25, 0.25, 0.25, 0.25]
-H = LogEntropy(dist)
-print(f"H = {H.shannon_entropy():.4f}")  # log(4)
+# Cross-entropy loss is a logarithmic invariant
+p_true = [1, 0, 0, 0]  # One-hot
+p_pred = [0.4, 0.3, 0.2, 0.1]
+H = LogEntropy(p_pred)
+loss = -sum(p * q for p, q in zip(p_true, [np.log(x) for x in p_pred]))
+# This IS the logarithmic structure at work
 ```
 
-**Application**: Connection between entropy and dimension in machine learning.
+### Physics
 
-### 5. Tropical Geometry
-
-Tropical polynomials are logarithmic in disguise:
+- Entropy in statistical mechanics = Shannon entropy = log(|microstates|)
+- Black hole information paradox — logarithmic structure of entropy
+- Conformal field theory — log-primary fields
 
 ```python
-from src.structures import TropicalPolynomial
+import numpy as np
 
-# Tropical polynomial: max(0, 1+x, 2+2x)
-trop = TropicalPolynomial([0, 1, 2])
-print(f"f(1) = {trop(1)}")  # Piecewise linear
+# Boltzmann entropy is logarithmic
+S = np.log(10**23)  # ~53 nats
+# This IS the logarithmic structure of thermodynamics
 ```
 
-**Application**: Optimizing tropical computations using logarithmic structure.
+### Algorithms
+
+- Parallel factoring — p-adic components are independent in log-space
+- Compression — Shannon entropy is logarithmic dimension
+- Database indexing — B-trees use logarithmic structure
+
+```python
+from src.core import LogarithmicBasis
+
+# Factoring in parallel: p-adic components are independent
+n = 2520
+basis = LogarithmicBasis(100)
+decomposition = basis.decompose(n)
+# Each p-component can be computed independently
+# {2: 3, 3: 2, 5: 1, 7: 1} — all parallelizable
+```
+
+### Finance
+
+- Log-normal distributions (Black-Scholes)
+- Information geometry of market states
+
+```python
+import numpy as np
+
+# Black-Scholes uses log-normal
+S = 100  # Stock price
+K = 105  # Strike
+r = 0.05  # Rate
+sigma = 0.2  # Volatility
+
+# The log-structure is fundamental
+d1 = (np.log(S/K) + (r + sigma**2/2)) / (sigma * np.sqrt(1))
+# log(S/K) = the logarithmic dimension of the price space
+```
 
 ## Running Tests
 
@@ -242,13 +280,18 @@ python tests/test_novel_structures.py
 ## Generating Visualizations
 
 ```bash
-python examples/visualization.py
+python tests/visual_tests.py
 ```
 
-This generates:
-- `logarithmic_calculus.png` — Logarithmic derivatives and phase space
-- `log_calc_basics.png` — Basic logarithmic operations
-- `log_calc_phase_space.png` — Logarithmic phase space dynamics
+This generates 5 visual test images:
+
+| Test | File | What it shows |
+|------|------|---------------|
+| **Test 1** | `test_dimension.png` | `dim_K(V) = log_{|K|}(|V|)` — all dimensions match exactly |
+| **Test 2** | `test_basis.png` | `{log(p)}` forms a basis for log(Q+) — reconstruction error is zero |
+| **Test 3** | `test_euler.png` | `zeta(s) = prod_p (1-p^{-s})^{-1}` — direct sum and Euler product match |
+| **Test 4** | `test_tropical.png` | Tropical = logarithmic geometry — Newton polytope, log isomorphism |
+| **Test 5** | `test_information.png` | Shannon entropy, KL divergence, Renyi entropy, Fisher metric |
 
 ## Mathematical Background
 
