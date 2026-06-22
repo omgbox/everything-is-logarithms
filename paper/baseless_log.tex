@@ -1,0 +1,270 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{remark}[definition]{Remark}
+
+\title{The Baseless Logarithm: A Formal Development}
+\author{Formalization of ideas from ``Everything Is Logarithms'' by Alex Kritchevsky}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We formalize the notion of a \emph{baseless logarithm} as an abstract algebraic object, independent of any choice of base. We show that baseless logarithms form a torsor under the multiplicative group $\mathbb{R}^{>0}$, and that the standard logarithm $\log_b x$ arises as a projection of this object onto a chosen coordinate system (base). We establish the change-of-base formula as a consequence of this structure, and connect the framework to vectors in differential geometry.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%======================================================================
+\section{Motivation}
+\label{sec:motivation}
+%======================================================================
+
+The logarithm $\log_b x$ is conventionally defined as the solution $y$ to $b^y = x$. This definition ties the logarithm to a specific base $b$, making it difficult to see that the \emph{operation} of taking a logarithm is independent of the choice of base.
+
+We propose a more natural object: the \textbf{baseless logarithm}, written $\log x$, which captures the multiplicative structure of $x$ without reference to any unit. Just as a geometric vector $\mathbf{v}$ exists independent of coordinates, $\log x$ exists independent of base.
+
+%======================================================================
+\section{Definitions}
+\label{sec:definitions}
+%======================================================================
+
+\begin{definition}[Baseless Logarithm]
+\label{def:baseless}
+The \textbf{baseless logarithm} of a positive real number $x \in \mathbb{R}^{>0}$ is the formal expression
+\[
+\log x
+\]
+regarded as an element of an abstract set $\mathcal{L}$ (the \textbf{logarithmic space}).
+\end{definition}
+
+\begin{remark}
+The expression $\log x$ is not assigned a numerical value. It is an algebraic object, analogous to a geometric vector $\mathbf{v}$ before projection onto coordinates.
+\end{remark}
+
+\begin{definition}[Based Logarithm as Projection]
+\label{def:based}
+Given a base $b \in \mathbb{R}^{>0}$ with $b \neq 1$, the \textbf{based logarithm} is the projection
+\[
+\log_b x \;=\; \frac{\log x}{\log b} \;\in\; \mathbb{R}.
+\]
+Here $\log b$ plays the role of a \textbf{unit vector} or \textbf{measuring stick} that converts the abstract object $\log x$ into a real number.
+\end{definition}
+
+\begin{example}
+\begin{itemize}
+\item The ``bits'' unit: $\log_2 x = \frac{\log x}{\log 2}$. Here $\log 2$ is the unit ``1 bit.''
+\item The ``nats'' unit: $\ln x = \frac{\log x}{\log e}$. Here $\log e$ is the unit ``1 nat.''
+\end{itemize}
+\end{example}
+
+%======================================================================
+\section{Algebraic Structure of $\mathcal{L}$}
+\label{sec:structure}
+%======================================================================
+
+We now establish the algebraic properties of the baseless logarithm.
+
+\begin{definition}[Logarithmic Space]
+\label{def:logspace}
+Let $\mathcal{L}$ be the set of all baseless logarithms. We equip $\mathcal{L}$ with a scalar multiplication by $\mathbb{R}^{>0}$:
+\[
+\cdot \;:\; \mathbb{R}^{>0} \times \mathcal{L} \to \mathcal{L}, \qquad c \cdot (\log x) \;=\; \log(x^c).
+\]
+\end{definition}
+
+\begin{proposition}[Multiplicative-to-Additive Isomorphism]
+\label{prop:isomorphism}
+The map
+\[
+\log \;:\; (\mathbb{R}^{>0}, \times) \;\to\; (\mathcal{L}, +)
+\]
+defined by $\log(xy) = \log x + \log y$ is a group homomorphism, where addition in $\mathcal{L}$ is defined by
+\[
+(\log x) + (\log y) \;=\; \log(xy).
+\]
+\end{proposition}
+
+\begin{proof}
+This is immediate from the definition of logarithms: for any bases $b_1, b_2$,
+\[
+\frac{\log(xy)}{\log b} \;=\; \frac{\log x + \log y}{\log b} \;=\; \frac{\log x}{\log b} + \frac{\log y}{\log b} \;=\; \log_b x + \log_b y.
+\]
+Since this holds for all bases $b$, the identity $\log(xy) = \log x + \log y$ holds in $\mathcal{L}$.
+\end{proof}
+
+\begin{theorem}[Change of Base as Unit Conversion]
+\label{thm:changebase}
+For any $b_1, b_2, x \in \mathbb{R}^{>0}$ with $b_1, b_2 \neq 1$:
+\[
+\log_{b_1} x \;=\; \log_{b_1}(b_2) \cdot \log_{b_2} x.
+\]
+That is, changing the base is equivalent to multiplying by the \emph{conversion factor} $\log_{b_1}(b_2)$ between the two units.
+\end{theorem}
+
+\begin{proof}
+\begin{align*}
+\log_{b_1}(b_2) \cdot \log_{b_2} x
+&= \frac{\log b_2}{\log b_1} \cdot \frac{\log x}{\log b_2} \\
+&= \frac{\log x}{\log b_1} \\
+&= \log_{b_1} x. \qedhere
+\end{align*}
+\end{proof}
+
+\begin{remark}
+This is precisely analogous to unit conversion in physics:
+\[
+2 \text{ km} = \frac{2000 \text{ m}}{1000 \text{ m/km}}.
+\]
+The ``units'' $\log b_1$ and $\log b_2$ play the same role as ``meters'' and ``kilometers.''
+\end{remark}
+
+%======================================================================
+\section{Torsor Structure}
+\label{sec:torsor}
+%======================================================================
+
+We now show that $\mathcal{L}$ is not a vector space, but a \textbf{torsor} (principal homogeneous space) under $\mathbb{R}^{>0}$.
+
+\begin{definition}[Torsor]
+A \textbf{torsor} under a group $G$ is a set $T$ with a free and transitive action of $G$. That is, for any $t_1, t_2 \in T$, there exists a unique $g \in G$ such that $t_2 = g \cdot t_1$.
+\end{definition}
+
+\begin{theorem}[$\mathcal{L}$ is a Torsor under $\mathbb{R}^{>0}$]
+\label{thm:torsor}
+The logarithmic space $\mathcal{L}$ is a torsor under the multiplicative group $(\mathbb{R}^{>0}, \times)$, with action
+\[
+c \cdot (\log x) \;=\; \log(x^c), \qquad c \in \mathbb{R}^{>0}.
+\]
+\end{theorem}
+
+\begin{proof}
+We verify the two torsor axioms:
+
+\textbf{Free:} If $c \cdot (\log x) = \log x$ for all $x$, then $\log(x^c) = \log x$, so $x^c = x$ for all $x > 0$, hence $c = 1$.
+
+\textbf{Transitive:} Given $\log x$ and $\log y$ in $\mathcal{L}$, we need $c$ such that $\log(x^c) = \log y$. This gives $x^c = y$, so $c = \frac{\log y}{\log x}$ (which is well-defined for $x \neq 1$; if $x = 1$ then $\log x = 0$ and the action is trivial).
+\end{proof}
+
+\begin{remark}
+This is analogous to the torsor of geometric vectors: a vector $\mathbf{v}$ exists independent of coordinates, and choosing a basis is like choosing a ``unit'' for measurement.
+\end{remark}
+
+%======================================================================
+\section{Connection to Vectors}
+\label{sec:vectors}
+%======================================================================
+
+We now draw the formal correspondence between baseless logarithms and geometric vectors.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{cc}
+\hline
+\textbf{Logarithms} & \textbf{Vectors} \\
+\hline
+$\log x$ (baseless) & $\mathbf{v}$ (geometric) \\
+$\log b$ (unit) & $\mathbf{e}$ (basis vector) \\
+$\log_b x = \frac{\log x}{\log b}$ & $v_e = \frac{\mathbf{v}}{\mathbf{e}}$ (projection) \\
+Change of base & Change of coordinates \\
+$b_1 \leftrightarrow b_2$ & $\mathbf{e}_1 \leftrightarrow \mathbf{e}_2$ \\
+$\log_{b_1} x = \log_{b_1}(b_2) \cdot \log_{b_2} x$ & $v_{e_1} = \frac{e_2}{e_1} \cdot v_{e_2}$ \\
+\hline
+\end{tabular}
+\caption{Correspondence between logarithmic and vector operations.}
+\label{tab:correspondence}
+\end{table}
+
+\begin{proposition}[Vector-Logarithm Analogy]
+\label{prop:vector-analogy}
+The following diagram commutes:
+\[
+\begin{array}{ccc}
+\mathcal{L} & \xrightarrow{\text{choose unit } \log b} & \mathbb{R} \\
+\downarrow_{\text{addition}} & & \downarrow_{+} \\
+\mathcal{L} & \xrightarrow{\text{choose unit } \log b} & \mathbb{R}
+\end{array}
+\]
+That is, adding baseless logarithms and then projecting to a base is the same as projecting to a base and then adding real numbers.
+\end{proposition}
+
+\begin{proof}
+\[
+\frac{\log(xy)}{\log b} = \frac{\log x + \log y}{\log b} = \frac{\log x}{\log b} + \frac{\log y}{\log b}. \qedhere
+\]
+\end{proof}
+
+%======================================================================
+\section{Partial Logarithms and Projections}
+\label{sec:partial}
+%======================================================================
+
+The article observes that there is no direct analogue of \emph{partial derivatives} for logarithms---yet various fields have independently invented such operations.
+
+\begin{definition}[$p$-adic Valuation as Logarithmic Projection]
+\label{def:padic}
+For a prime $p$ and positive integer $n$ with factorization $n = \prod_i p_i^{a_i}$, define
+\[
+\nu_p(n) \;=\; a_p
+\]
+as the \textbf{projection} of $\log n$ onto the $\log p$ component:
+\[
+\log n \;=\; \sum_i a_i \log p_i, \qquad \nu_p(n) = a_p.
+\]
+\end{definition}
+
+\begin{proposition}[$\nu_p$ is Logarithmic]
+\label{prop:nulog}
+The $p$-adic valuation satisfies:
+\begin{enumerate}
+\item $\nu_p(mn) = \nu_p(m) + \nu_p(n)$ (additive in the multiplicative argument).
+\item $\nu_p(m/n) = \nu_p(m) - \nu_p(n)$.
+\item $\nu_p(p^k) = k$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+These follow directly from the uniqueness of prime factorization. If $m = p^a \cdot m'$ and $n = p^b \cdot n'$ with $p \nmid m', n'$, then $mn = p^{a+b} \cdot m'n'$ and $m/n = p^{a-b} \cdot m'/n'$.
+\end{proof}
+
+\begin{remark}
+We may write this schematically as
+\[
+\nu_p(n) \;=\; \frac{\partial}{\partial (\log p)} \log n
+\]
+where the ``derivative'' is the projection onto the $\log p$ direction. This mirrors $\frac{\partial f}{\partial x} = \frac{df}{dx}\big|_{\text{$x$-component}}$ in vector calculus.
+\end{remark}
+
+%======================================================================
+\section{Summary and Open Questions}
+\label{sec:summary}
+%======================================================================
+
+We have formalized:
+\begin{enumerate}
+\item The baseless logarithm $\log x$ as an abstract object in $\mathcal{L}$.
+\item The based logarithm $\log_b x$ as a projection $\frac{\log x}{\log b}$.
+\item Change of base as unit conversion: $\log_{b_1} x = \log_{b_1}(b_2) \cdot \log_{b_2} x$.
+\item $\mathcal{L}$ as a torsor under $(\mathbb{R}^{>0}, \times)$.
+\item The correspondence with geometric vectors.
+\item $p$-adic valuation as a ``partial logarithm.''
+\end{enumerate}
+
+\textbf{Open questions:}
+\begin{itemize}
+\item Can we define a general \emph{partial logarithm} operator for arbitrary multiplicative decompositions?
+\item How does this framework extend to complex logarithms and the multi-valued structure?
+\item What is the precise relationship between $\mathcal{L}$ and the Lie algebra of $(\mathbb{R}^{>0}, \times)$?
+\item Can fractional dimensions (as in \S\ref{sec:motivation}) be given a rigorous algebraic interpretation?
+\end{itemize}
+
+\end{document}

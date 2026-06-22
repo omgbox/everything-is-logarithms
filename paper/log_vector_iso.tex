@@ -1,0 +1,209 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{remark}[definition]{Remark}
+
+\title{The Logarithm-Vector Isomorphism}
+\author{Formalization of ideas from ``Everything Is Logarithms'' by Alex Kritchevsky}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We establish a precise correspondence between the baseless logarithm and geometric vectors in differential geometry. We show that logarithms behave as vectors under a natural group action, that vectors in differential geometry can be interpreted as logarithms of translation operators, and that the change-of-base formula for logarithms is isomorphic to coordinate transformations for vectors.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%======================================================================
+\section{The Logarithmic Vector Space}
+\label{sec:log-vector}
+%======================================================================
+
+From the baseless logarithm framework (see companion document \texttt{baseless\_log.tex}), we have the logarithmic space $\mathcal{L}$ with:
+\begin{itemize}
+\item Elements: $\log x$ for $x \in \mathbb{R}^{>0}$
+\item Addition: $(\log x) + (\log y) = \log(xy)$
+\item Scalar multiplication: $c \cdot (\log x) = \log(x^c)$ for $c \in \mathbb{R}$
+\end{itemize}
+
+\begin{definition}[Logarithmic Vector]
+A \textbf{logarithmic vector} is an element $\log x \in \mathcal{L}$. We write vectors in bold: $\mathbf{v} = \log x$.
+\end{definition}
+
+\begin{proposition}[$\mathcal{L}$ is a Real Vector Space]
+The logarithmic space $(\mathcal{L}, +, \cdot)$ with the operations above is a real vector space isomorphic to $(\mathbb{R}, +, \cdot)$.
+\end{proposition}
+
+\begin{proof}
+Define $\phi: \mathcal{L} \to \mathbb{R}$ by $\phi(\log x) = \ln x$. Then:
+\begin{align*}
+\phi((\log x) + (\log y)) &= \phi(\log(xy)) = \ln(xy) = \ln x + \ln y = \phi(\log x) + \phi(\log y) \\
+\phi(c \cdot (\log x)) &= \phi(\log(x^c)) = \ln(x^c) = c \ln x = c \cdot \phi(\log x)
+\end{align*}
+So $\phi$ is a linear isomorphism.
+\end{proof}
+
+%======================================================================
+\section{Bases and Coordinates}
+\label{sec:bases}
+%======================================================================
+
+\begin{definition}[Logarithmic Basis]
+A \textbf{basis} for $\mathcal{L}$ is a single nonzero element $\log b \in \mathcal{L}$ (since $\mathcal{L}$ is one-dimensional). The coordinate of $\log x$ with respect to $\log b$ is:
+\[
+v_b = \frac{\log x}{\log b} = \log_b x \in \mathbb{R}.
+\]
+\end{definition}
+
+\begin{definition}[Coordinate Map]
+The \textbf{coordinate map} $\phi_b: \mathcal{L} \to \mathbb{R}$ with respect to basis $\log b$ is:
+\[
+\phi_b(\log x) = \log_b x = \frac{\log x}{\log b}.
+\]
+\end{definition}
+
+\begin{theorem}[Coordinate Independence]
+For any two bases $\log b_1, \log b_2 \in \mathcal{L}$, the coordinate maps are related by:
+\[
+\phi_{b_1}(\log x) = \frac{\log b_2}{\log b_1} \cdot \phi_{b_2}(\log x).
+\]
+That is, $\phi_{b_1} = \frac{\log b_2}{\log b_1} \circ \phi_{b_2}$.
+\end{theorem}
+
+\begin{proof}
+\[
+\phi_{b_1}(\log x) = \frac{\log x}{\log b_1} = \frac{\log b_2}{\log b_1} \cdot \frac{\log x}{\log b_2} = \frac{\log b_2}{\log b_1} \cdot \phi_{b_2}(\log x). \qedhere
+\]
+\end{proof}
+
+\begin{remark}
+The factor $\frac{\log b_2}{\log b_1} = \log_{b_1}(b_2)$ is the \textbf{transition coefficient} between coordinate systems, analogous to the Jacobian $\frac{dx'}{dx}$ in differential geometry.
+\end{remark}
+
+%======================================================================
+\section{Vectors as Logarithms of Translation Operators}
+\label{sec:vectors-as-logs}
+%======================================================================
+
+We now reverse the correspondence: geometric vectors can be interpreted as logarithms.
+
+\begin{definition}[Translation Operator]
+In differential geometry, the \textbf{translation operator} $T^{\mathbf{v}}$ for a vector $\mathbf{v} = v_x \partial_x + v_y \partial_y$ is:
+\[
+T^{\mathbf{v}} = e^{\mathbf{v}} = e^{v_x \partial_x + v_y \partial_y}.
+\]
+This acts on functions as: $T^{\mathbf{v}} f(x,y) = f(x + v_x, y + v_y)$.
+\end{definition}
+
+\begin{proposition}[Vector as Logarithm of Translation]
+The geometric vector $\mathbf{v}$ is the logarithm of its translation operator:
+\[
+\mathbf{v} = \ln T^{\mathbf{v}}.
+\]
+\end{proposition}
+
+\begin{proof}
+By definition, $T^{\mathbf{v}} = e^{\mathbf{v}}$, so $\ln T^{\mathbf{v}} = \mathbf{v}$.
+\end{proof}
+
+\begin{remark}
+This means the space of geometric vectors is isomorphic to the space of translation operators via the exponential/logarithm map. The logarithm here is literally the inverse of the exponential map in Lie theory.
+\end{remark}
+
+\begin{theorem}[Decomposition in Coordinates]
+For a vector $\mathbf{v} = v_x \partial_x + v_y \partial_y$, the translation operator decomposes as:
+\[
+T^{\mathbf{v}} = e^{v_x \partial_x} \cdot e^{v_y \partial_y} = T_x^{v_x} \cdot T_y^{v_y},
+\]
+where $T_x^{v_x} = e^{v_x \partial_x}$ is translation in the $x$-coordinate by $v_x$.
+\end{theorem}
+
+\begin{proof}
+In flat space, the partial derivative operators commute: $[\partial_x, \partial_y] = 0$. Therefore:
+\[
+e^{v_x \partial_x + v_y \partial_y} = e^{v_x \partial_x} \cdot e^{v_y \partial_y}. \qedhere
+\]
+\end{proof}
+
+\begin{remark}
+Taking logarithms: $\mathbf{v} = \ln T^{\mathbf{v}} = v_x \ln T_x + v_y \ln T_y = v_x \partial_x + v_y \partial_y$. The components $v_x, v_y$ are the ``coordinates'' of $\mathbf{v}$ in the basis $\{\partial_x, \partial_y\}$.
+\end{remark}
+
+%======================================================================
+\section{The Exponential Map and Logarithmic Structure}
+\label{sec:exponential}
+%======================================================================
+
+\begin{definition}[Exponential Map]
+The \textbf{exponential map} $\exp: \mathcal{L} \to \mathbb{R}^{>0}$ is defined by:
+\[
+\exp(\log x) = x.
+\]
+This is a group isomorphism from $(\mathcal{L}, +)$ to $(\mathbb{R}^{>0}, \times)$.
+\end{definition}
+
+\begin{proposition}[Exponential-Logarithm Duality]
+The following diagram commutes:
+\[
+\begin{array}{ccc}
+\mathcal{L} & \xrightarrow{\exp} & \mathbb{R}^{>0} \\
+\downarrow_{c \cdot} & & \downarrow_{(\cdot)^c} \\
+\mathcal{L} & \xrightarrow{\exp} & \mathbb{R}^{>0}
+\end{array}
+\]
+That is, $\exp(c \cdot \log x) = (\exp(\log x))^c = x^c$.
+\end{proposition}
+
+\begin{proof}
+\[
+\exp(c \cdot \log x) = \exp(\log(x^c)) = x^c = (\exp(\log x))^c. \qedhere
+\]
+\end{proof}
+
+%======================================================================
+\section{Summary: The Complete Correspondence}
+\label{sec:summary}
+%======================================================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Logarithmic Structure} & \textbf{Vector Structure} \\
+\hline
+$\log x$ (baseless log) & $\mathbf{v}$ (geometric vector) \\
+$\log b$ (choice of base/unit) & $\mathbf{e}$ (choice of basis) \\
+$\log_b x = \frac{\log x}{\log b}$ (coordinate) & $v_e = \frac{\mathbf{v}}{\mathbf{e}}$ (component) \\
+$\exp(\log x) = x$ (exponential) & $e^{\mathbf{v}} = T^{\mathbf{v}}$ (translation) \\
+$\ln T^{\mathbf{v}} = \mathbf{v}$ (logarithm) & $\ln T^{\mathbf{v}} = \mathbf{v}$ (inverse exp) \\
+Change of base $b_1 \to b_2$ & Change of coordinates $\mathbf{e}_1 \to \mathbf{e}_2$ \\
+Conversion factor $\log_{b_1}(b_2)$ & Transition matrix $\frac{\mathbf{e}_2}{\mathbf{e}_1}$ \\
+\hline
+\end{tabular}
+\caption{Complete correspondence between logarithmic and vector structures.}
+\end{table}
+
+\begin{theorem}[Main Isomorphism]
+There is a natural isomorphism:
+\[
+\Phi: (\mathbb{R}^{>0}, \times) \xrightarrow{\sim} (\mathbb{R}, +) \xrightarrow{\sim} \text{Vect}(\mathbb{R}^2)
+\]
+where:
+\begin{enumerate}
+\item $\Phi(x) = \log x$ (baseless logarithm)
+\item The middle isomorphism sends $t \mapsto t \partial_x$ (a one-dimensional vector)
+\item Composition gives: $x \mapsto (\ln x) \partial_x$
+\end{enumerate}
+\end{theorem}
+
+\end{document}
